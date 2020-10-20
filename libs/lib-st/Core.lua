@@ -599,8 +599,8 @@ do
 
 	function ScrollingTable:CreateST(cols, numRows, rowHeight, highlight, parent)
 		local st = {};
-		self.framecount = self.framecount or 1; 
-		local f = CreateFrame("Frame", "ScrollTable" .. self.framecount, parent or UIParent);
+		self.framecount = self.framecount or 1;
+		local f = CreateFrame("Frame", "ScrollTable" .. self.framecount, parent or UIParent, "BackdropTemplate");
 		self.framecount = self.framecount + 1;
 		st.showing = true;
 		st.frame = f;

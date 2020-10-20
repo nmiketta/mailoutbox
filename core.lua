@@ -362,7 +362,7 @@ function CheckMailRecipient (...)
    local EditBox = ...;
    local hist= MailOutboxHistory;
    local  foundcnt,rcpt=0,EditBox:GetText();
-   if IsIgnored(rcpt) then 
+   if C_FriendList.IsIgnored(rcpt) then
       EditBox:SetTextColor(1, 0.4, 0.4);
       else
    for index,sentmail in pairs(hist) do
@@ -647,21 +647,30 @@ local currencylist=false;
 local currencyInfo;
 
 function get_currencylist ()
-   if currencylist then return currencylist;end;
-   local currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered,currencyID;
-   currencylist={};
-   for currencyID=1,2500  do
-      currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(currencyID);
-      if currencyamount~=0 or isDiscovered or #string.trim(currencyname)>0 then
-            currencylist [currencyID]={};
-            currencylist [currencyID].name=currencyname;
-            currencylist [currencyID].texturePath=texturePath;
-            currencylist [currencyID].link=GetCurrencyLink(currencyID, currencyamount);                        
-         end;          
-      end;
-   return currencylist;
-end;
+	if currencylist then
+		return currencylist;
+	end;
 
+	currencylist={};
+	currencyInfo = nil;
+
+	for currencyID=1,2500  do
+		currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyID);
+
+		if currencyInfo then
+			if currencyInfo.quantity ~= 0 or currencyInfo.discovered or #string.trim(currencyInfo.name) > 0 then
+				local link = C_CurrencyInfo.GetCurrencyLink(currencyID, currencyInfo.quantity);
+
+				currencylist[currencyID] = {};
+				currencylist[currencyID].name = currencyInfo.name;
+				currencylist[currencyID].texturePath = currencyInfo.iconFileID;
+				currencylist[currencyID].link = link;
+			end;
+		end;
+	end;
+
+	return currencylist;
+end;
 
 local factionlist=false;
 
@@ -944,7 +953,7 @@ function get_currencies_status ()
    local currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered,currencyID, currencyDetails;
    local currencies={};
    for currencyID,currencyDetails  in pairs (get_currencylist()) do
-      currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(currencyID);
+      currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo(currencyID);
       currencies[currencyID] = currencyamount;
       end;
    return currencies;
