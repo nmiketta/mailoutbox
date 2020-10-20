@@ -1,0 +1,16 @@
+## Interface: 60000 
+## X-Compatible-With: 50400
+## X-Min-Interface: 50000
+## Title: Mail Outbox
+## Version: 1.5.0.release
+## Notes: Tracks outgoing mails, trades...
+## Author: Dieen@twobears.cz
+## SavedVariables: MailOutboxHistory, mooptions
+## OptionalDeps: LibStub, Ace3, lib-st
+## X-Curse-Packaged-Version: 1.5.0.release
+## X-Curse-Project-Name: Mail Outbox
+## X-Curse-Project-ID: mail-outbox
+## X-Curse-Repository-ID: wow/mail-outbox/mainline
+
+embeds.xml
+core.lua

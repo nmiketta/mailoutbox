@@ -1,0 +1,37 @@
+------------------------------------------------------------------------
+r49 | dieendieen | 2014-10-15 21:32:58 +0000 (Wed, 15 Oct 2014) | 1 line
+Changed paths:
+   A /tags/1.5.0.release (from /trunk:48)
+
+Tagging as 1.5.0.release
+------------------------------------------------------------------------
+r48 | DieenDieen | 2014-10-15 21:31:08 +0000 (Wed, 15 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/MailOutbox.toc
+   M /trunk/libs/AceAddon-3.0/AceAddon-3.0.lua
+   M /trunk/libs/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.lua
+   M /trunk/libs/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/libs/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+   M /trunk/libs/AceGUI-3.0/AceGUI-3.0.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-BlizOptionsGroup.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-InlineGroup.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-Keybinding.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua
+   M /trunk/libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+   M /trunk/libs/AceHook-3.0/AceHook-3.0.lua
+   M /trunk/libs/AceLocale-3.0/AceLocale-3.0.lua
+   M /trunk/libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   M /trunk/libs/LibStub/LibStub.lua
+
+1.5.0.release
+------------------------------------------------------------------------
