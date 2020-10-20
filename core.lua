@@ -1,6 +1,6 @@
-	--[[Author:		DieenDieen 
+	--[[Author:		DieenDieen
 	License:	All Rights Reserved
-	Contact:	
+	Contact:
 -- global lookup
 ]]
 
@@ -45,7 +45,7 @@ core = LibStub("AceAddon-3.0"):NewAddon(packedtitle, "AceConsole-3.0",  "AceHook
 
 local ldb=LibStub("LibDataBroker-1.1",true)
 local dataobj = {};
-if ldb then 
+if ldb then
 	dataobj=ldb:NewDataObject("MailOutbox", {
 	icon = "Interface\\AddOns\\mailoutbox\\mailoutbox",
 	iconWidth = 32,
@@ -69,19 +69,19 @@ moconfig = {
         	name = 'COD settings',
         	args = {
         		Zero={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Zero COD gold visible',
         			desc = 'Enables showing of zero COD gold in outgoing mail report',
         			set = 'SetOption',
         			get = 'GetOption',
         		},
         		Graphics={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Use graphics',
         			desc = 'Uses graphics for showing outgoing COD gold',
         			set = 'SetOption',
         			get = 'GetOption',
-        		},        		
+        		},
             }
         },
         Gold = {
@@ -89,19 +89,19 @@ moconfig = {
         	name = 'Gold settings',
         	args = {
         		Zero={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Zero gold visible',
         			desc = 'Enables showing of zero gold in outgoing mail report',
         			set = 'SetOption',
         			get = 'GetOption',
         		},
         		Graphics={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Use graphics',
         			desc = 'Uses graphics for showing outgoing gold',
         			set = 'SetOption',
         			get = 'GetOption',
-        		},        		
+        		},
             },
         },
         History = {
@@ -109,13 +109,13 @@ moconfig = {
         	name = 'History setting',
         	args = {
         		Enabled={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Tracking enabled',
         			desc = 'Enables storing history of outgoing mails',
         			set = 'SetOption',
         			get = 'GetOption',
         		},
-       		        		
+
             },
         },
         Cash = {
@@ -123,21 +123,21 @@ moconfig = {
         	name = 'Cash flow tracking',
         	args = {
         		Enabled={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Tracking enabled',
         			desc = 'Enables tracking of some cash flow events (ah,vendor..)',
         			set = 'SetOption',
         			get = 'GetOption',
         		},
         		Zero={
-        			type = 'toggle',            
+        			type = 'toggle',
         			name = 'Zero gold visible',
         			desc = 'Enables showing of zero gold transactions',
         			set = 'SetOption',
         			get = 'GetOption',
-        		},       		        		
+        		},
             },
-        },        
+        },
     },
 }
 
@@ -157,7 +157,7 @@ modefaultoptions = {
 	},
 	["Cash"] = {
 		["Enabled"] = true,
-	},	
+	},
 }
 
 
@@ -195,7 +195,7 @@ function core:OnInitialize()
   	local dialog = LibStub("AceConfigDialog-3.0");
 	config:RegisterOptionsTable(packedtitle, moconfig);
 	coreOpts = dialog:AddToBlizOptions(packedtitle, title);
-	
+
 end
 
 
@@ -203,13 +203,13 @@ local active_action={};
 
 function core:OnEnable()
    --print "---mailoutbox OnEnable";
-   for i, event in pairs (regEvents) do 
+   for i, event in pairs (regEvents) do
 		self:RegisterEvent(event)
-	end	
+	end
 end
 
 function core:MAIL_SHOW(event, ...)
-   local action= start_action ("mailbox");   
+   local action= start_action ("mailbox");
     action.location=GetZoneText();
     if GetSubZoneText() then action.location=action.location.."-"..GetSubZoneText(); end;
    action.info="mailbox in "..action.location;
@@ -218,14 +218,14 @@ end;
 
 function core:MAIL_CLOSED(event, ...)
 	mailOpen = 0
-	finish_action ("mailbox",false);   
+	finish_action ("mailbox",false);
 end
 
 
 local function GetItemListString(aMail)
 	local ItemList="";
 
-	for index=1,#aMail.Items  do	 
+	for index=1,#aMail.Items  do
 		local anItem=aMail.Items [index];
 		ItemList = ItemList.." "..(anItem.Link or anItem.Name or "(???)").."x"..(anItem.Count or "0");
    	   end
@@ -248,34 +248,34 @@ local lastgold,goldgained,goldlost=0,0,0;
 local addon_initialized=false;
 
 function core:ADDON_LOADED(event, ...)
-    if not addon_initialized then 
+    if not addon_initialized then
 		 addon_initialized=true;
 		 --print "--ADDON_LOADED event";
 		 if MailOutboxHistory==nil then
 				 MailOutboxHistory = {};
 			 end;
 		 MailOutboxHistoryAvaiable = true;
-		 lastgold =GetMoney(); 
-	
+		 lastgold =GetMoney();
+
 		 if MailOutboxHistory.Serialized then
 				local result;
 				result,MailOutboxHistory=core:Deserialize(MailOutboxHistory.Serialized);
 			 end;
-		--upgrade history data 
+		--upgrade history data
 		 for index,sentmail in pairs(MailOutboxHistory) do
-			if sentmail.Version == nil then  sentmail.Version = 1; end;   
+			if sentmail.Version == nil then  sentmail.Version = 1; end;
 			 if sentmail.Version == 1 then  sentmail.Version = 2; sentmail.Channel = "mail"; end;
 			 if sentmail.Version == 2 then  sentmail.Version = 3; sentmail.InOut = "out"; end;
 			 if sentmail.Version == 3 then  sentmail.Version = 4; sentmail.Location = "unknown"; end;
 			 if sentmail.From==nil then sentmail.From="";end;
 			 if sentmail.Subject==nil then sentmail.Subject="";end;
-			 if sentmail.Channel == nil then sentmail.Channel ="";end; 
+			 if sentmail.Channel == nil then sentmail.Channel ="";end;
 			 if sentmail.InOut == nil then sentmail.InOut="";end;
 			 if sentmail.Location == nil then sentmail.Location ="";end;
 			 if sentmail.Recipient == nil then  sentmail.Recipient = "";end;
 			end;
-		 
-				  
+
+
 		 if mooptions.version == nil then
 			 mooptions.version = modefaultoptions.version;
 			 mooptions.COD = modefaultoptions.COD;
@@ -288,14 +288,14 @@ function core:ADDON_LOADED(event, ...)
 end
 
 local function AggregateIntoTable (aTable,anItem)
-    local ItemAlreadyInList = false;	
+    local ItemAlreadyInList = false;
 	for index=1,#aTable do
 	      if aTable[index].Link == anItem.Link then
 		             aTable[index].Count = aTable[index].Count + anItem.Count;
 		             ItemAlreadyInList = true;
 		          end;
 		   end;
-    if not ItemAlreadyInList then table.insert(aTable, anItem);end;      	
+    if not ItemAlreadyInList then table.insert(aTable, anItem);end;
 end;
 
 
@@ -309,7 +309,7 @@ local function FormatMoneyTostring(ammount,category)
          outstring=tostring((ammount+0.0001)/10000).."g";
       end;
    end;
-   return outstring; 
+   return outstring;
 end;
 
 local OldGetInboxText=nil;
@@ -319,16 +319,16 @@ local function ProcessInboxMail(index)
 	 local Transaction = {};
 	 Transaction.Valid = false;
 	 Transaction.Version = CurrentHistoryVersion;
-	 
+
 	 local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, wasReturned, textCreated, canReply, isGM, itemQuantity = GetInboxHeaderInfo(index);
-	 local bodyText, texture, isTakeable, isInvoice = OldGetInboxText(index); 	 
+	 local bodyText, texture, isTakeable, isInvoice = OldGetInboxText(index);
 	 Transaction.Subject = subject;
 	 Transaction.Body = bodyText;
 	 Transaction.Cost = 0;
 	 Transaction.COD = CODAmount;
 	 Transaction.Money = money;
-	 
-	 
+
+
 	 Transaction.Channel = "mail";
 	 Transaction.InOut = "in";
 	 Transaction.Location = GetRealZoneText();
@@ -336,28 +336,28 @@ local function ProcessInboxMail(index)
 	 Transaction.Recipient = GetUnitName ("player");
 	 --Transaction.Timestamp = date("%Y/%m/%d %H:%M:%S",InboxItemsSentOn[index]);
 	 Transaction.Timestamp = date("%Y/%m/%d %H:%M:%S");
-	 
-	   
-	   
+
+
+
 	if type(itemCount)~="number" then  itemCount = 0;end;
-	
+
 	Transaction.Items = {};
-	for i=1,itemCount do		
+	for i=1,itemCount do
 		local Name, itemTexture, Count, quality, canUse = GetInboxItem(index, i);
 		if Name then
 			local NewItem= {};
 			NewItem.Name=Name;
 			NewItem.Count=Count;
-			NewItem.Link=GetInboxItemLink(index, i) or '';		
+			NewItem.Link=GetInboxItemLink(index, i) or '';
 			AggregateIntoTable (Transaction.Items,NewItem);
 			end;
 		end;
-		
+
 	Transaction.Valid = true;
-	table.insert(MailOutboxHistory, Transaction);   
+	table.insert(MailOutboxHistory, Transaction);
 end;
 
-function CheckMailRecipient (...) 
+function CheckMailRecipient (...)
    --DEFAULT_CHAT_FRAME:AddMessage ("CheckMailRecipient called");
    local EditBox = ...;
    local hist= MailOutboxHistory;
@@ -368,7 +368,7 @@ function CheckMailRecipient (...)
    for index,sentmail in pairs(hist) do
       if sentmail and sentmail.Channel == "mail" and sentmail.Recipient and sentmail.Recipient==rcpt then foundcnt=foundcnt+1;end;
       end
-      
+
    --DEFAULT_CHAT_FRAME:AddMessage ("Found "..tostring(foundcnt).." for "..tostring(rcpt));
    if  foundcnt>5 then
       EditBox:SetTextColor(0.2, 1, 0.2);
@@ -402,7 +402,7 @@ widget.ScrollTable:SetData({});
 f:UnregisterAllEvents();
 f:ClearAllPoints();
 widget.ScrollTable = nil;
-AceGUI:Release(widget) 
+AceGUI:Release(widget)
 end)
 f:SetTitle("Mail Outbox history page");
 f:SetStatusText("List of sent and/or received mails and items")
@@ -416,44 +416,44 @@ local mailhistorycols = {
 	{ name= "Recipient", width = 100, defaultsort = "dsc", },
 	{ name= "Subject", width = 200, defaultsort = "dsc", },
 	{ name= "Money", width = 100, defaultsort = "dsc",
-	DoCellUpdate = function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, self, ...)		  		
-		  		if fShow then 
-			  		local cellData = data[realrow].cols[column]; 		  		
+	DoCellUpdate = function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, self, ...)
+		  		if fShow then
+			  		local cellData = data[realrow].cols[column];
 			  		cellFrame.text:SetText(FormatMoneyTostring(cellData.value,"Gold"));
-				end				
+				end
 		  	end
 	},
 	{ name= "COD", width = 100, defaultsort = "dsc",
-	DoCellUpdate = function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, self, ...)		  		
-		  		if fShow then 
-			  		local cellData = data[realrow].cols[column]; 		  		
+	DoCellUpdate = function(rowFrame, cellFrame, data, cols, row, realrow, column, fShow, self, ...)
+		  		if fShow then
+			  		local cellData = data[realrow].cols[column];
 			  		cellFrame.text:SetText(FormatMoneyTostring(cellData.value,"COD"));
-				end				
+				end
 		  	end},
 	{ name= "#items", width = 40, defaultsort = "dsc",},
 	{ name= "list", width = 200, defaultsort = "dsc",},
 	};
-	
-  	
+
+
 	local window  = f.frame
-	
+
 	local mailhistoryST = MOScrollingTable:CreateST(mailhistorycols, 10, 16, nil, window)
 		mailhistoryST.frame:SetPoint("BOTTOMLEFT",window, 10,10)
 		mailhistoryST.frame:SetPoint("TOP", window, 0, -60)
-		mailhistoryST.frame:SetPoint("RIGHT", window, -10,0)	
+		mailhistoryST.frame:SetPoint("RIGHT", window, -10,0)
 
 	f.ScrollTable=mailhistoryST;
 	mailhistoryST.Fire=function(...)return true;end;
 	mailhistoryST.userdata={};
-	
+
 	mailhistoryST.QuickFilterRule="";
-	
-	if MailOutboxHistoryAvaiable then 
+
+	if MailOutboxHistoryAvaiable then
 	local testdata={};
 	local i=0;
 	for index,sentmail in pairs(MailOutboxHistory) do
 		if sentmail.Valid then
-		  local Itemlist= GetItemListString(sentmail);		
+		  local Itemlist= GetItemListString(sentmail);
 		  tinsert(testdata, {cols = {
 		  	{value = sentmail.Timestamp},
 		  	{value = sentmail.Channel.."/"..tostring(sentmail.InOut)},
@@ -476,19 +476,19 @@ local STFilter=function (self, row)
    return false;
 end;
 
-	   
+
 	   	--mailhistoryST.SetFilter(STFilter);
 
-	   
+
 	end
-	
+
     local width = 100
-	for i, data in pairs(mailhistorycols) do 
+	for i, data in pairs(mailhistorycols) do
 		width = width + data.width
 	end
 	f:SetWidth(width);
     mailhistoryST:SetDisplayRows((f.content.height / 16)-2, 16);
-	
+
 	--mailhistoryST:Show()
 
 
@@ -504,10 +504,10 @@ function core:GetOption(info)
      	mooptions[info[#info-1]]={};
         end;
        opt = mooptions[info[#info-1]] [info[#info]];
-       optname=info[#info-1].."."..info[#info];       
+       optname=info[#info-1].."."..info[#info];
      end;
-     
-     --print("The " .. tostring(optname) .. " returned as: " .. tostring(opt) ); 
+
+     --print("The " .. tostring(optname) .. " returned as: " .. tostring(opt) );
     return opt;
 end
 
@@ -517,20 +517,20 @@ function core:SetOption(info, value)
  	    mooptions [info[#info-1]]={};
  	    end;
      mooptions [info[#info-1]] [info[#info]] = value;
-     --print("The " .. info[#info-1].."."..info[#info] .. " was set to: " .. tostring(value) );     
+     --print("The " .. info[#info-1].."."..info[#info] .. " was set to: " .. tostring(value) );
      else
      mooptions [info[#info]] = value;
-     --print("The " .. info[#info] .. " was set to: " .. tostring(value) );     
+     --print("The " .. info[#info] .. " was set to: " .. tostring(value) );
      end;
-  
+
 end
 
 local function ResetSendMailInfo()
 	outgoingmail = {};
-	outgoingmail.Valid = false;		
+	outgoingmail.Valid = false;
 	outgoingmailitems = {};
 	outgoingmailCOD = 0;
-	outgoingmailmoney = 0;	
+	outgoingmailmoney = 0;
 end;
 
 
@@ -552,7 +552,7 @@ local function reportMailInfo()
 			   outmoney=tostring(outgoingmail.Money/10000).."g";
 			   end;
 			end;
-			
+
 		local outCOD="";
 		if (outgoingmail.COD>0) or (mooptions.COD.Zero) then
 		   if mooptions.COD.Graphics then
@@ -561,29 +561,29 @@ local function reportMailInfo()
 			   outCOD="COD"..tostring(outgoingmail.COD/10000).."g";
 			   end;
 			end;
-			
+
 		ChatFrame1:AddMessage (outgoingmail.Timestamp..":(to:"..outgoingmail.Recipient..", "..countableitems..", "..outmoney.." "..outCOD..") '"..outgoingmail.Subject.."'");
 
 		local ItemList=GetItemListString(outgoingmail);
-		
-		if (0<#outgoingmail.Items) then 
+
+		if (0<#outgoingmail.Items) then
 		   ChatFrame1:AddMessage (ItemList);
 		   end;
 		outgoingmail.Version = CurrentHistoryVersion;
 		outgoingmail.Channel = "mail";
         outgoingmail.InOut = "out";
- 		
+
 		if mooptions.History.Enabled then
 		   MailOutboxHistory [#MailOutboxHistory+1] = outgoingmail;
 		   end;
-	  ResetSendMailInfo();		   
+	  ResetSendMailInfo();
    end;
 end;
 
 
 local function UpdateSendMailInfo()
 --[[
-	print "------"; 
+	print "------";
     print (SendMailSubjectEditBox:GetText());
 	print (SendMailNameEditBox:GetText());
 	print (SendMailBodyEditBox:GetText());
@@ -598,7 +598,7 @@ local function UpdateSendMailInfo()
 	outgoingmail.Body = SendMailBodyEditBox:GetText();
 	outgoingmail.Cost = GetSendMailPrice();
 	outgoingmail.Items = outgoingmailitems;
-	outgoingmail.COD = outgoingmailCOD;    
+	outgoingmail.COD = outgoingmailCOD;
 	outgoingmail.Money = outgoingmailmoney;
 	outgoingmail.Location = GetRealZoneText();
 	outgoingmail.Valid = true;
@@ -606,10 +606,10 @@ end;
 
 local function UpdateSendMailitemsInfo()
    outgoingmailitems = {};
-   for index=1, 12 do 
-		local Name, Texture, Count, Quality = GetSendMailItem (index); 
-		if Name then    
-			local ItemAlreadyInList = false;	
+   for index=1, 12 do
+		local Name, Texture, Count, Quality = GetSendMailItem (index);
+		if Name then
+			local ItemAlreadyInList = false;
 		    for inindex=1,#outgoingmailitems do
 		       if outgoingmailitems[inindex].Name == Name then
 		             outgoingmailitems[inindex].Count = outgoingmailitems[inindex].Count + Count;
@@ -644,6 +644,7 @@ ActiveTrade.TargetItems={};
 end;
 
 local currencylist=false;
+local currencyInfo;
 
 function get_currencylist ()
    if currencylist then return currencylist;end;
@@ -669,13 +670,13 @@ function get_factionlist ()
    local factionname, factiondescription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild,factionID;
    factionlist={};
    for factionID=1,2500  do
-      factionname, factiondescription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild = GetFactionInfoByID(factionID);      
+      factionname, factiondescription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild = GetFactionInfoByID(factionID);
       if standingID and factionname and #string.trim(factionname)>0  then
             factionlist [factionID]={};
             factionlist [factionID].name=factionname;
             factionlist [factionID].standingID=standingID;
-            factionlist [factionID].reputation=barValue;                                                 
-         end;          
+            factionlist [factionID].reputation=barValue;
+         end;
       end;
    return factionlist;
 end;
@@ -688,10 +689,10 @@ end;
 
 function core:UI_INFO_MESSAGE(event, ...)
 local arg1 = ...;
-if arg1==ERR_TRADE_CANCELLED then 
+if arg1==ERR_TRADE_CANCELLED then
 --print ("ERR_TRADE_CANCELLED");
 ResetActiveTrade();
-elseif arg1==ERR_TRADE_COMPLETE then 
+elseif arg1==ERR_TRADE_COMPLETE then
 --print ("ERR_TRADE_COMPLETE");
 --print ("player money");
 --print (ActiveTrade.Debit);
@@ -704,51 +705,51 @@ ActiveTrade.Timestamp = date("%Y/%m/%d %H:%M:%S");
 
 if mooptions.History.Enabled then
 	local Transaction = {};
-	
+
 	 Transaction.Subject = "";
 	 Transaction.Body = "";
 	 Transaction.Cost = 0;
 	 Transaction.COD = 0;
 	 Transaction.Valid = false;
 	 Transaction.Version = CurrentHistoryVersion;
-	 Transaction.Channel = "trade";      	 
+	 Transaction.Channel = "trade";
 	 Transaction.Location = GetRealZoneText();
 	 Transaction.From = GetUnitName ("player");
 	 Transaction.Recipient = ActiveTrade.Recipient;
 	 Transaction.Timestamp = ActiveTrade.Timestamp;
-	
+
 	if (ActiveTrade.Debit > 0) or (#ActiveTrade.PlayerItems>0) then
 		Transaction.Items = ActiveTrade.PlayerItems;
 		Transaction.Money = ActiveTrade.Debit;
 		Transaction.InOut = "out";
-		Transaction.Valid = true;	
-		table.insert(MailOutboxHistory, Transaction); 
+		Transaction.Valid = true;
+		table.insert(MailOutboxHistory, Transaction);
 	   end;
 
 	 Transaction = nil;
-	 Transaction = {};	 
+	 Transaction = {};
 	 Transaction.Subject = "";
 	 Transaction.Body = "";
 	 Transaction.Cost = 0;
 	 Transaction.COD = 0;
 	 Transaction.Valid = false;
 	 Transaction.Version = CurrentHistoryVersion;
-	 Transaction.Channel = "trade";      	 
+	 Transaction.Channel = "trade";
 	 Transaction.Location = GetRealZoneText();
 	 Transaction.From = GetUnitName ("player");
 	 Transaction.Recipient = ActiveTrade.Recipient;
 	 Transaction.Timestamp = ActiveTrade.Timestamp;
-	   
-	   
+
+
 	if (ActiveTrade.Credit > 0) or (#ActiveTrade.TargetItems>0) then
-		Transaction.Items = ActiveTrade.TargetItems;    
+		Transaction.Items = ActiveTrade.TargetItems;
 		Transaction.Money = ActiveTrade.Credit;
-        Transaction.InOut = "in";		
+        Transaction.InOut = "in";
 		Transaction.Valid = true;
-		table.insert(MailOutboxHistory, Transaction); 
+		table.insert(MailOutboxHistory, Transaction);
 	   end;
-	
-	end;   
+
+	end;
    end; --successful trade
 end;
 
@@ -763,7 +764,7 @@ ActiveTrade.Recipient=GetUnitName("NPC", true);
 end;
 
 local function UpdateTradeMoney()
-   if ActiveTrade.InProgress then 
+   if ActiveTrade.InProgress then
 	   ActiveTrade.Debit = GetPlayerTradeMoney();
 	   ActiveTrade.Credit = GetTargetTradeMoney();
 	   --print ("money update:"..ActiveTrade.Debit.."/"..ActiveTrade.Credit);
@@ -782,7 +783,7 @@ UpdateTradeMoney();
 		NewItem.Name=Name;
 		NewItem.Count=Count;
 		NewItem.Link=GetTradeTargetItemLink(index);
-	
+
 		AggregateIntoTable (ActiveTrade.TargetItems,NewItem);
 	else
 	end;
@@ -795,14 +796,14 @@ UpdateTradeMoney();
   ActiveTrade.PlayerItems = {};
    for index=1,MAX_TRADABLE_ITEMS do
      local Name, Texture, Count, Quality, isUsable, enchantment = GetTradePlayerItemInfo(index);
-     if Name then           
+     if Name then
         --print (index..":"..Name.." x"..Count);
      	local NewItem= {};
 		NewItem.Name=Name;
 		NewItem.Count=Count;
 		NewItem.Link=GetTradePlayerItemLink(index);
-		
-        AggregateIntoTable (ActiveTrade.PlayerItems,NewItem);	
+
+        AggregateIntoTable (ActiveTrade.PlayerItems,NewItem);
         --print (#ActiveTrade.PlayerItems);
 		else
 	end;
@@ -824,8 +825,8 @@ function core:MAIL_INBOX_UPDATE(event)
    if OldGetInboxText==nil then
    	--print ("hooking");
    	OldGetInboxText=_G["GetInboxText"];
-   	_G["GetInboxText"]=MyGetInboxText;   	
-   	end;   	
+   	_G["GetInboxText"]=MyGetInboxText;
+   	end;
    if OldOnTextChangedHooked==false then
          OldOnTextChanged = SendMailNameEditBox:GetScript("OnTextChanged");
          SendMailNameEditBox:SetScript("OnTextChanged",CheckMailRecipient );
@@ -836,50 +837,50 @@ end;
 function core:MAIL_SEND_SUCCESS(event, ...)
     -- print "------mail send succes";
     outgoingmailmoney = 0;
-    outgoingmailCOD = 0;    
+    outgoingmailCOD = 0;
     reportMailInfo();
 
     -- print (outgoingmail.Money);
-    -- print (outgoingmail.COD);    
-    
-    
+    -- print (outgoingmail.COD);
+
+
     end
-    
+
 function core:PLAYER_LOGOUT(event, ...)
 	--MailOutboxHistory={serialized=core:Serialize(MailOutboxHistory)};
 	end
-    
+
 
 
 function core:SEND_MAIL_MONEY_CHANGED(event, ...)
    -- print "------SEND_MAIL_MONEY_CHANGED";
-   
+
    if GetSendMailMoney()~=0 then
       outgoingmailmoney = GetSendMailMoney();
       end;
    UpdateSendMailInfo();
-   
+
   -- print (outgoingmail.Money);
   -- print (outgoingmail.COD);
-      
+
 end
 
 function core:SEND_MAIL_COD_CHANGED(event, ...)
-  -- print "------SEND_MAIL_COD_CHANGED";   
-    
+  -- print "------SEND_MAIL_COD_CHANGED";
+
   if GetSendMailCOD()~=0 then
       outgoingmailCOD = GetSendMailCOD();
    end;
-      
+
     UpdateSendMailInfo();
-    
+
     -- print (outgoingmail.Money);
     -- print (outgoingmail.COD);
 end
 
 function core:MAIL_SEND_INFO_UPDATE(event, ...)
    -- print "------MAIL_SEND_INFO_UPDATE";
-   UpdateSendMailitemsInfo();	
+   UpdateSendMailitemsInfo();
 end
 
 local ahopen=false;
@@ -888,18 +889,18 @@ function core:AUCTION_HOUSE_SHOW(event, ...)
    -- print "------AUCTION_HOUSE_SHOW";
    ahopen=true;
    local action=start_action ("AH");
-   
+
    action.location=GetZoneText();
-   action.subzone=GetSubZoneText();    
+   action.subzone=GetSubZoneText();
    action.info="AH in "..action.location;
-   
+
 end
 
 
 function core:AUCTION_HOUSE_CLOSED(event, ...)
    -- print "------AUCTION_HOUSE_CLOSED";
-   finish_action ("AH");   
-   ahopen=false; 
+   finish_action ("AH");
+   ahopen=false;
 end
 
 function core:PLAYER_ENTERING_WORLD(event, ...)
@@ -908,9 +909,9 @@ function core:PLAYER_ENTERING_WORLD(event, ...)
  local inInstance, instanceType = IsInInstance();
  if inInstance then
       if instanceType=="party" or instanceType=="scenario" then
-            local action=start_action ("dungeon"); 
+            local action=start_action ("dungeon");
             action.location=GetZoneText();
-            action.subzone=GetSubZoneText();    
+            action.subzone=GetSubZoneText();
             action.info=instancename.." ("..difficultyName..")";
          end;
     else
@@ -923,17 +924,17 @@ function show_gainedlost (partner,startgained,startlost)
    local goldprofit=gainedchange-lostchange;
    if (mooptions.Cash.Enabled) and (mooptions.Cash.Zero or (abs(gainedchange)>0.01) or (abs(lostchange)>0.01) or (abs(goldprofit)>0.01)) then
       local msg=(partner and ("While at '"..partner.."' "))or "";
-      msg=msg.."you "..((goldprofit<=0.0001 and "|cffff0000 spent ") or "|cff00ff00 gained ")..FormatMoneyTostring(abs(goldprofit),"Gold");    
+      msg=msg.."you "..((goldprofit<=0.0001 and "|cffff0000 spent ") or "|cff00ff00 gained ")..FormatMoneyTostring(abs(goldprofit),"Gold");
       msg=msg..(((gainedchange>0) and (lostchange>0) and(" |cffffffff(|cff00ff00+"..FormatMoneyTostring(abs(gainedchange),"Gold").." |cffffffff/ |cffff0000-"..FormatMoneyTostring(abs(lostchange),"Gold").."|cffffffff)"))or "");
       ChatFrame1:AddMessage (msg);
       end;
 end;
 
 
-local function show_gainedlost_currency (start,current,link)   
+local function show_gainedlost_currency (start,current,link)
    local profit=current-start;
    if (mooptions.Cash.Enabled and start~=current ) then
-      local msg="you "..((profit<=0.0001 and "|cffff0000 spent ") or "|cff00ff00 gained ")..tostring(abs(profit)).." "..link;               
+      local msg="you "..((profit<=0.0001 and "|cffff0000 spent ") or "|cff00ff00 gained ")..tostring(abs(profit)).." "..link;
       ChatFrame1:AddMessage (msg);
       end;
 end;
@@ -941,7 +942,7 @@ end;
 
 function get_currencies_status ()
    local currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered,currencyID, currencyDetails;
-   local currencies={};   
+   local currencies={};
    for currencyID,currencyDetails  in pairs (get_currencylist()) do
       currencyname, currencyamount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(currencyID);
       currencies[currencyID] = currencyamount;
@@ -950,38 +951,38 @@ function get_currencies_status ()
 end;
 
 function check_currencies (currencylist)
-   local  startamount,currencyamount=0,0;  
+   local  startamount,currencyamount=0,0;
    local current=get_currencies_status ();
    local currencyID,currencyDetails ;
    for currencyID,currencyDetails in pairs (get_currencylist()) do
       startamount = 0; currencyamount = 0;
-      if current[currencyID] then currencyamount=current[currencyID];end;      
-      if currencylist[currencyID] then startamount = currencylist[currencyID];end;      
-      if startamount~=currencyamount then show_gainedlost_currency(startamount,currencyamount,currencyDetails.link); end;      
+      if current[currencyID] then currencyamount=current[currencyID];end;
+      if currencylist[currencyID] then startamount = currencylist[currencyID];end;
+      if startamount~=currencyamount then show_gainedlost_currency(startamount,currencyamount,currencyDetails.link); end;
    end;
 end;
 
 
-function get_factions_status ()   
+function get_factions_status ()
    local factionname, factiondescription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild;
-   local listID,factionyDetails;   
-   local factions={};   
+   local listID,factionyDetails;
+   local factions={};
    for listID,factionyDetails  in pairs (get_factionlist()) do
       factionname, factiondescription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild = GetFactionInfoByID(listID);
-      factions[listID] = barValue;     
+      factions[listID] = barValue;
       end;
    return factions;
 end;
 
 function check_factions (alist)
-   local startamount,currentamount=0,0;  
-   local listID,Details; 
+   local startamount,currentamount=0,0;
+   local listID,Details;
    local current=get_factions_status();
    for listID,Details  in pairs (get_factionlist()) do
       startamount = 0; currentamount = 0;
-      if current[listID] then currentamount=current[listID];end;      
-      if alist[listID] then startamount = alist[listID];end;      
-      if startamount~=currentamount then show_gainedlost_currency(startamount,currentamount,' reputation with '..Details.name); end;      
+      if current[listID] then currentamount=current[listID];end;
+      if alist[listID] then startamount = alist[listID];end;
+      if startamount~=currentamount then show_gainedlost_currency(startamount,currentamount,' reputation with '..Details.name); end;
    end;
 end;
 
@@ -994,14 +995,14 @@ function start_action (action_type)
    active_action[action_type].startlost   = goldlost;
    active_action[action_type].show_zero = true;
    active_action[action_type].startcurrencies = get_currencies_status();
-   active_action[action_type].startfactions = get_factions_status();   
-                
+   active_action[action_type].startfactions = get_factions_status();
+
    active_action[action_type].active= true;
    return active_action[action_type];
 end;
 
-function finish_action (action_type)	
-   
+function finish_action (action_type)
+
    if active_action [action_type] and active_action [action_type].active then
       local action=active_action [action_type];
       if action.show_zero or action.startgained~=goldgained or action.startlost~=goldlost then
@@ -1010,9 +1011,9 @@ function finish_action (action_type)
       check_currencies (action.startcurrencies);
       check_factions (action.startfactions);
       action.active = false;
-      active_action [action_type] = nil;      
+      active_action [action_type] = nil;
       end;
-   
+
 end;
 
 
@@ -1023,12 +1024,12 @@ function core:MERCHANT_SHOW(event, ...)
 end;
 
 function core:MERCHANT_CLOSED(event, ...)
-   finish_action ("merchant");      
+   finish_action ("merchant");
 end;
 
 function core:PLAYER_MONEY(event, ...)
   local goldchange=GetMoney()-lastgold;
-  if goldchange>0 then goldgained=goldgained+goldchange; 
+  if goldchange>0 then goldgained=goldgained+goldchange;
   elseif goldchange<0 then goldlost=goldlost-goldchange;end;
   local goldprofit=goldgained-goldlost;
   --- ChatFrame1:AddMessage ("Gold "..((goldprofit<0 and "|cffff0000 spent ") or "|cff00ff00 gained ")..FormatMoneyTostring(abs(goldprofit)+0.0001,"Gold").." |cffffffff(|cff00ff00"..FormatMoneyTostring(abs(goldgained)+0.0001,"Gold").." |cffffffff/ |cffff0000"..FormatMoneyTostring(abs(goldlost)+0.0001,"Gold").."|cffffffff)");
@@ -1038,7 +1039,7 @@ end;
 
 
 function core:OnDisable()
-	
+
 end
 
 local function ExportCSV()
@@ -1047,17 +1048,17 @@ if not exportFrame then
     exportFrame:SetTitle("History export frame");
     exportFrame:SetStatusText("Copy data from here")
     exportFrame:SetLayout("Fill")
-    
+
     exporteditbox = AceGUI:Create("MultiLineEditBox");
     exporteditbox:SetLabel("History:");
     exporteditbox:SetWidth(200);
     exporteditbox:SetNumLines(8);
     exportFrame:AddChild(exporteditbox);
     end;
-    
-local csvtext =[["Timestamp";"Channel";"In/Out";"Location";"From";"Recipient";"Money";"COD";"Cost";"Subject";"Message";"Count";"items"]].."\n";	
 
-if MailOutboxHistoryAvaiable then 
+local csvtext =[["Timestamp";"Channel";"In/Out";"Location";"From";"Recipient";"Money";"COD";"Cost";"Subject";"Message";"Count";"items"]].."\n";
+
+if MailOutboxHistoryAvaiable then
 	local i=0;
 	for index,sentmail in pairs(MailOutboxHistory) do
 		if sentmail.Valid then
@@ -1075,19 +1076,19 @@ if MailOutboxHistoryAvaiable then
 		  ..tostring(sentmail.Body)..[[";"]]
 		  ..tostring(#sentmail.Items)..[[";"]]
 		  ..GetItemListNameString(sentmail)
-		  ..[["]].."\n";		  
+		  ..[["]].."\n";
 		  end
      end;
     end;
 
- exporteditbox:SetText(csvtext); 
+ exporteditbox:SetText(csvtext);
  exportFrame:Show();
 end;
 
 local function DoMoneyCheckpoint()
 if MoneyTracking==nil then MoneyTracking={}; end;
- 
- table.insert(MoneyTracking,1,{Money = GetMoney(),Timestamp = date("%Y/%m/%d %H:%M:%S")});    
+
+ table.insert(MoneyTracking,1,{Money = GetMoney(),Timestamp = date("%Y/%m/%d %H:%M:%S")});
  DEFAULT_CHAT_FRAME:AddMessage ("Money check point at "..GetCoinTextureString(MoneyTracking[1].Money));
 
 end;
@@ -1116,7 +1117,7 @@ function dataobj.OnTooltipShow(tip)
 			if (item.Money or 0) > 0 then gold=FormatMoneyTostring(item.Money,"Gold");end;
 			items="("..(#item.Items or 0).." item"..(((#item.Items or 0)~=1 and "s") or "")..")";
 			trinfo=(item.From  or "").." -> "..(item.Recipient or "");
-			tip:AddDoubleLine(trdate.." |cffEDEDED"..trinfo.."|r "..gold.." "..items,(item.Subject or ""));		  
+			tip:AddDoubleLine(trdate.." |cffEDEDED"..trinfo.."|r "..gold.." "..items,(item.Subject or ""));
 		  end
      end;
 	tip:AddLine(" ");
@@ -1140,15 +1141,14 @@ function core:MySlashProcessorFunc(input)	--
    elseif strlower(input)=="exportcsv" then
      ExportCSV();
    elseif strlower(input)=="moneyprogress" then
-     if MoneyTracking==nil then DoMoneyCheckpoint();end;    
+     if MoneyTracking==nil then DoMoneyCheckpoint();end;
      local sign,moneyprogress="|cff00ff00 +",(GetMoney()-MoneyTracking[1].Money);
      if moneyprogress<0 then sign="|cffff0000 -";end;
      DEFAULT_CHAT_FRAME:AddMessage (sign..GetCoinTextureString(abs(moneyprogress)));
    elseif strlower(input)=="moneycheckpoint" then
       DoMoneyCheckpoint();
-   end;   
+   end;
 end
 
 
 -----------------------------------------------------
-
